@@ -1,53 +1,49 @@
-from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import RoadmapStep, UserRoadmapProgress
-from .serializers import RoadmapStepSerializer, UserRoadmapProgressSerializer
+from directions.constants import get_direction_label
+from directions.models import Direction
+from .content import ROADMAP_PLANS
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def roadmap_list(request):
+def roadmap_plan(request):
     direction_slug = request.query_params.get('direction')
 
-    steps = RoadmapStep.objects.filter(is_active=True)
+    if not direction_slug:
+        return Response(
+            {'detail': 'direction parametri kerak'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    if direction_slug:
-        steps = steps.filter(direction__slug=direction_slug, direction__is_active=True)
+    plan = ROADMAP_PLANS.get(direction_slug)
+    if not plan:
+        return Response(
+            {'detail': 'Bu yo\'nalish uchun reja topilmadi'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
-    serializer = RoadmapStepSerializer(steps, many=True, context={'user': request.user})
-    return Response(serializer.data)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def complete_step(request, step_id):
     try:
-        step = RoadmapStep.objects.get(id=step_id, is_active=True)
-    except RoadmapStep.DoesNotExist:
-        return Response({'detail': 'Bosqich topilmadi'}, status=status.HTTP_404_NOT_FOUND)
+        direction = Direction.objects.get(slug=direction_slug, is_active=True)
+    except Direction.DoesNotExist:
+        return Response(
+            {'detail': 'Yo\'nalish topilmadi'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
-    progress, _ = UserRoadmapProgress.objects.update_or_create(
-        user=request.user,
-        step=step,
-        defaults={
-            'is_completed': True,
-            'completed_at': timezone.now(),
-        },
-    )
-
-    return Response(UserRoadmapProgressSerializer(progress).data)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def my_progress(request):
-    progress = UserRoadmapProgress.objects.filter(
-        user=request.user,
-        is_completed=True,
-    )
-    serializer = UserRoadmapProgressSerializer(progress, many=True)
-    return Response(serializer.data)
+    return Response({
+        'slug': direction.slug,
+        'name': get_direction_label(direction.slug, direction.name),
+        'short_description': direction.short_description,
+        'difficulty': direction.difficulty,
+        'what_you_learn': direction.what_you_learn,
+        'job_market': direction.job_market,
+        'real_life_example': direction.real_life_example,
+        'who_is_it_for': direction.who_is_it_for,
+        'sections': plan['sections'],
+        'google_query': plan['google_query'],
+        'youtube_query': plan['youtube_query'],
+    })

@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
+from directions.constants import get_direction_label
 from .models import MiniTask, UserTaskCompletion
 
 
 class MiniTaskSerializer(serializers.ModelSerializer):
-    direction_name = serializers.CharField(source='direction.name', read_only=True)
+    direction_name = serializers.SerializerMethodField()
     direction_slug = serializers.CharField(source='direction.slug', read_only=True)
 
     class Meta:
@@ -19,6 +20,9 @@ class MiniTaskSerializer(serializers.ModelSerializer):
             'task_data',
             'order',
         ]
+
+    def get_direction_name(self, obj):
+        return get_direction_label(obj.direction.slug, obj.direction.name)
 
 
 class CompleteTaskSerializer(serializers.Serializer):

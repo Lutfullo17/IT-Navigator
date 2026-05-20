@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -7,6 +8,7 @@ from .serializers import DirectionSerializer
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def direction_list(request):
     directions = Direction.objects.filter(is_active=True)
     serializer = DirectionSerializer(directions, many=True)
@@ -14,6 +16,7 @@ def direction_list(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def direction_detail(request, slug):
     try:
         direction = Direction.objects.get(slug=slug, is_active=True)

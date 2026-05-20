@@ -10,6 +10,8 @@ class Profile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    full_name = models.CharField(max_length=120, blank=True)
+    phone = models.CharField(max_length=20, unique=True, blank=True, null=True)
     preferred_language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES, default='uz')
     onboarding_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

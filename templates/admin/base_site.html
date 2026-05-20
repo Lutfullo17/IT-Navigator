@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | IT Navigator{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">IT Navigator Admin</a></div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #header {
+    background: #4f9cf9;
+    color: #fff;
+  }
+  #header a:link, #header a:visited {
+    color: #fff;
+  }
+  div.breadcrumbs {
+    background: #e8f2ff;
+  }
+  .module h2, .module caption, #changelist-filter h2 {
+    background: #3b82d9;
+  }
+  a:link, a:visited {
+    color: #3b82d9;
+  }
+  .button, input[type=submit], input[type=button], .submit-row input, button {
+    background: #4f9cf9;
+  }
+  .button:active, input[type=submit]:active, .button:focus, input[type=submit]:focus {
+    background: #3b82d9;
+  }
+</style>
+{% endblock %}

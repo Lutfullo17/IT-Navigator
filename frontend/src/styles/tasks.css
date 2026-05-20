@@ -1,0 +1,202 @@
+/* Vazifalar */
+
+.tasks-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.tasks-intro {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.tasks-empty {
+  text-align: center;
+  color: var(--text-light);
+  padding: 40px;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+}
+
+.tasks-detail--single {
+  max-width: 640px;
+  margin: 24px auto 0;
+}
+
+.tasks-progress {
+  margin-bottom: 24px;
+}
+
+.tasks-progress span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.tasks-progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.tasks-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.tasks-next {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.tasks-yana-btn {
+  min-width: 160px;
+  padding: 14px 36px;
+  font-size: 16px;
+}
+
+.tasks-finish {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.tasks-finish h2 {
+  font-size: 22px;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.tasks-finish p {
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.tasks-finish-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.tasks-detail {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  animation: pageEnter 0.4s ease both;
+}
+
+.tasks-direction {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tasks-detail h2 {
+  font-size: 24px;
+  margin: 8px 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.tasks-description {
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.tasks-instruction {
+  background: var(--primary-light);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 20px 22px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.tasks-instruction h3 {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.tasks-instruction p {
+  line-height: 1.7;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.tasks-hint {
+  background: var(--warm-light);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.tasks-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.tasks-direction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.tasks-direction-card {
+  width: 100%;
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  cursor: pointer;
+  color: inherit;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.tasks-direction-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: var(--glow);
+}
+
+.tasks-direction-card svg {
+  color: var(--primary);
+  margin-bottom: 14px;
+}
+
+.tasks-direction-card h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.tasks-direction-card p {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.tasks-direction-grid .reveal {
+  height: 100%;
+}
+

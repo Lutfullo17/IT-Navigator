@@ -13,10 +13,14 @@ from .serializers import MiniTaskSerializer, CompleteTaskSerializer, UserTaskCom
 def task_list(request):
     direction_slug = request.query_params.get('direction')
 
-    tasks = MiniTask.objects.filter(is_active=True)
+    if not direction_slug:
+        return Response([])
 
-    if direction_slug:
-        tasks = tasks.filter(direction__slug=direction_slug, direction__is_active=True)
+    tasks = MiniTask.objects.filter(
+        is_active=True,
+        direction__slug=direction_slug,
+        direction__is_active=True,
+    )
 
     serializer = MiniTaskSerializer(tasks, many=True)
     return Response(serializer.data)

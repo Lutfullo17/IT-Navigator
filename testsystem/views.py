@@ -6,21 +6,15 @@ from rest_framework import status
 
 from .models import TestSession, UserAnswer
 from .serializers import TestSessionSerializer, SubmitAnswersSerializer
-from .services import generate_test_questions, generate_recommendations
+from .services import get_test_questions, generate_recommendations
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_test(request):
-    language = request.data.get('language', 'uz')
     question_count = request.data.get('count', 15)
 
-    try:
-        questions = generate_test_questions(count=question_count, language=language)
-    except ValueError as e:
-        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        return Response({'detail': f'AI xatolik: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    questions = get_test_questions(count=question_count)
 
     session = TestSession.objects.create(
         user=request.user,

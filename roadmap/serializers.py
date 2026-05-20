@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
+from directions.constants import get_direction_label
 from .models import RoadmapStep, UserRoadmapProgress
 
 
 class RoadmapStepSerializer(serializers.ModelSerializer):
-    direction_name = serializers.CharField(source='direction.name', read_only=True)
+    direction_name = serializers.SerializerMethodField()
     direction_slug = serializers.CharField(source='direction.slug', read_only=True)
     is_completed = serializers.SerializerMethodField()
 
@@ -21,6 +22,9 @@ class RoadmapStepSerializer(serializers.ModelSerializer):
             'resource_type',
             'is_completed',
         ]
+
+    def get_direction_name(self, obj):
+        return get_direction_label(obj.direction.slug, obj.direction.name)
 
     def get_is_completed(self, obj):
         user = self.context.get('user')

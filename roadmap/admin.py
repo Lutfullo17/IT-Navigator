@@ -8,6 +8,16 @@ class RoadmapStepAdmin(admin.ModelAdmin):
     list_filter = ('direction', 'resource_type', 'is_active')
     search_fields = ('title', 'description')
     ordering = ('direction', 'order')
+    list_editable = ('order', 'is_active')
+
+    fieldsets = (
+        ('Asosiy', {
+            'fields': ('direction', 'title', 'order', 'is_active'),
+        }),
+        ('Mazmun', {
+            'fields': ('description', 'resource_type', 'resource_url'),
+        }),
+    )
 
 
 @admin.register(UserRoadmapProgress)

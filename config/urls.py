@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
+import config.admin  # noqa: F401 — admin panel branding
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/directions/', include('directions.urls')),
