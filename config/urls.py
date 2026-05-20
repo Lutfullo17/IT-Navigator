@@ -7,4 +7,6 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/test/', include('testsystem.urls')),
     path('api/mentor/', include('ai_mentor.urls')),
+    path('api/tasks/', include('tasks.urls')),
+    path('api/roadmap/', include('roadmap.urls')),
 ]
