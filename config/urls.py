@@ -9,4 +9,6 @@ urlpatterns = [
     path('api/mentor/', include('ai_mentor.urls')),
     path('api/tasks/', include('tasks.urls')),
     path('api/roadmap/', include('roadmap.urls')),
+    path('api/motivation/', include('motivation.urls')),
+    path('api/progress/', include('progress.urls')),
 ]
