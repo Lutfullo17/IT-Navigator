@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'api',
     'users',
     'rest_framework_simplejwt',
     'drf_spectacular',
@@ -136,3 +136,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Groq (AI) — muhit o'zgaruvchisi: GROQ_API_KEY
+# PowerShell: $env:GROQ_API_KEY = "gsk_..."
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
