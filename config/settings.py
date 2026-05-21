@@ -2,6 +2,7 @@
 Django settings for config project.
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -99,6 +100,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': False,
 }
 
 database_url = os.environ.get('DATABASE_URL', '').strip()

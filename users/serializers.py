@@ -10,7 +10,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from .models import Profile
-from .utils import normalize_phone, is_valid_uz_phone
+from .utils import normalize_phone, is_valid_uz_phone, phone_exists
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -29,9 +29,7 @@ class RegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'Telefon raqam noto\'g\'ri. +998 dan keyin 9 ta raqam kiriting'
             )
-        if Profile.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError('Bu telefon allaqachon ro\'yxatdan o\'tgan')
-        if User.objects.filter(username=phone).exists():
+        if phone_exists(phone):
             raise serializers.ValidationError('Bu telefon allaqachon ro\'yxatdan o\'tgan')
         return phone
 

@@ -30,6 +30,7 @@ ENV PORT=8000
 EXPOSE 8000
 
 CMD python manage.py migrate --noinput \
+    && python manage.py seed_demo \
     && exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:${PORT} \
     --workers 2 \

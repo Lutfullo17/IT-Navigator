@@ -138,6 +138,15 @@
   font-weight: 500;
 }
 
+.page-empty {
+  text-align: center;
+  color: var(--text-light);
+  padding: 48px 24px;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
 .page-header {
   margin-bottom: 32px;
 }

@@ -34,6 +34,18 @@ function Directions() {
     return <div className="page-error">{error}</div>;
   }
 
+  if (!directions.length) {
+    return (
+      <div className="directions-page">
+        <header className="page-header">
+          <h1>{t('directions.title')}</h1>
+          <p>{t('directions.subtitle')}</p>
+        </header>
+        <p className="page-empty">{t('common.emptyDirections')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="directions-page">
       <ScrollReveal>

@@ -7,10 +7,17 @@ export function useScrollReveal(options = {}) {
     const element = ref.current;
     if (!element) return undefined;
 
+    const show = () => element.classList.add('visible');
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      show();
+      return undefined;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          element.classList.add('visible');
+          show();
           if (options.once !== false) {
             observer.unobserve(element);
           }
@@ -19,14 +26,19 @@ export function useScrollReveal(options = {}) {
         }
       },
       {
-        threshold: options.threshold ?? 0.15,
-        rootMargin: options.rootMargin ?? '0px 0px -40px 0px',
+        threshold: options.threshold ?? 0.08,
+        rootMargin: options.rootMargin ?? '0px 0px 0px 0px',
       },
     );
 
     observer.observe(element);
 
-    return () => observer.disconnect();
+    const fallback = window.setTimeout(show, 800);
+
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
   }, [options.once, options.threshold, options.rootMargin]);
 
   return ref;

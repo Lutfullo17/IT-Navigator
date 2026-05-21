@@ -95,3 +95,6 @@ python manage.py seed_demo
 | Admin stil yo‘q | `collectstatic` buildda ishlaydi (`railway.toml`) |
 | API ulanmaydi | Frontend `VITE_API_URL` va qayta build |
 | Telegram ishlamaydi | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` backend Variables |
+| Bo‘limlar bo‘sh (production) | `seed_demo` deployda ishlaydi; yoki Shell: `python manage.py seed_demo` |
+| Logout (tugma bosganda) | JWT refresh qo‘shildi; access token 12 soat |
+| Bir raqam 2 marta register | `phone_exists()` — `+998` va `998` bir xil; `normalize_phones` eski yozuvlar uchun |
