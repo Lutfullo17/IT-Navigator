@@ -1,6 +1,9 @@
 # IT Navigator — Railway ga deploy
 
-Loyiha **2 ta service** dan iborat: **Backend** (Django API) va **Frontend** (React).
+Loyiha ikki usulda deploy qilinadi:
+
+1. **Bitta service (tavsiya)** — Django + React bir URL (`it-navigator-production.up.railway.app`). Build frontend’ni ham qiladi, `/` → `/register`.
+2. **Ikki service** — alohida Backend API va Frontend static.
 
 ## 1. Tayyorgarlik
 
@@ -28,8 +31,13 @@ Loyiha **2 ta service** dan iborat: **Backend** (Django API) va **Frontend** (Re
 
 `DATABASE_URL` PostgreSQL dan keladi — qo‘lda yozish shart emas.
 
-5. Deploy tugagach **Settings → Networking → Generate Domain** (masalan `it-navigator-api.up.railway.app`)
-6. Tekshirish: `https://YOUR-BACKEND.up.railway.app/health/` → `{"status":"ok"}`
+5. Deploy tugagach **Settings → Networking → Generate Domain** (masalan `it-navigator-production.up.railway.app`)
+6. Tekshirish:
+   - `https://YOUR-DOMAIN/health/` → `{"status":"ok"}`
+   - `https://YOUR-DOMAIN/` → React (register/login)
+   - `https://YOUR-DOMAIN/api/` — API
+
+Bitta service uchun `VITE_API_URL` odatda kerak emas — `frontend/.env.production` da `/api` (shu domen).
 
 ### Migratsiya va demo ma’lumot
 

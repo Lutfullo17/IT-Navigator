@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 import config.admin  # noqa: F401 — admin panel branding
-from common.views import health_check
+from common.views import health_check, spa_index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,4 +19,6 @@ urlpatterns = [
     path('api/health/', health_check),
     path('api/health', health_check),
     path('api/feedback/', include('common.urls')),
+    # React SPA (/, /register, /home, …) — API/admin/health dan keyin
+    re_path(r'^(?!api/|admin/|health|static/).*$', spa_index),
 ]

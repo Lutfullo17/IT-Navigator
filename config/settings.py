@@ -132,6 +132,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+FRONTEND_DIST = BASE_DIR / 'frontend' / 'dist'
+if (FRONTEND_DIST / 'index.html').is_file():
+    WHITENOISE_ROOT = FRONTEND_DIST
 STORAGES = {
     'default': {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
