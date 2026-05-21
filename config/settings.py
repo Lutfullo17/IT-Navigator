@@ -32,7 +32,8 @@ if railway_domain and railway_domain not in ALLOWED_HOSTS:
 if 'healthcheck.railway.app' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('healthcheck.railway.app')
 if not DEBUG:
-    for host in ('.up.railway.app', '.railway.app'):
+    # Railway ichki health check localhost orqali keladi
+    for host in ('localhost', '127.0.0.1', '.up.railway.app', '.railway.app'):
         if host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
 
@@ -132,7 +133,7 @@ STORAGES = {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
     },
 }
 
@@ -146,7 +147,8 @@ else:
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', True)
+    # Railway edge allaqachon HTTPS — ichki health check redirect loop bermasligi uchun default False
+    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', False)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 

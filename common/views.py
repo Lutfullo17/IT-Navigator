@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -7,10 +8,9 @@ from .serializers import ContactFeedbackSerializer
 from .telegram_notify import send_telegram_message
 
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
 def health_check(request):
-    return Response({'status': 'ok'})
+    """Railway health probe — DRF/CSRF dan tashqari, tez 200."""
+    return JsonResponse({'status': 'ok'})
 
 
 @api_view(['POST'])

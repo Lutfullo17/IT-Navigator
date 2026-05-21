@@ -14,6 +14,9 @@ urlpatterns = [
     path('api/roadmap/', include('roadmap.urls')),
     path('api/motivation/', include('motivation.urls')),
     path('api/progress/', include('progress.urls')),
+    path('health/', health_check),
+    path('health', health_check),
     path('api/health/', health_check),
+    path('api/health', health_check),
     path('api/feedback/', include('common.urls')),
 ]

@@ -18,7 +18,8 @@ Loyiha **2 ta service** dan iborat: **Backend** (Django API) va **Frontend** (Re
 |-------------|--------|
 | `SECRET_KEY` | Railway **Generate** (uzun random) |
 | `DEBUG` | `False` |
-| `ALLOWED_HOSTS` | `.up.railway.app` |
+| `ALLOWED_HOSTS` | `.up.railway.app` (yulduzcha `*` emas — Django `.up.railway.app` qabul qiladi) |
+| `SECURE_SSL_REDIRECT` | `False` (Railway uchun majburiy emas; `True` health checkni buzishi mumkin) |
 | `CORS_ALLOWED_ORIGINS` | `https://SIZNING-FRONTEND.up.railway.app` |
 | `CSRF_TRUSTED_ORIGINS` | `https://SIZNING-FRONTEND.up.railway.app` |
 | `GROQ_API_KEY` | Groq kalitingiz |
@@ -28,7 +29,7 @@ Loyiha **2 ta service** dan iborat: **Backend** (Django API) va **Frontend** (Re
 `DATABASE_URL` PostgreSQL dan keladi — qo‘lda yozish shart emas.
 
 5. Deploy tugagach **Settings → Networking → Generate Domain** (masalan `it-navigator-api.up.railway.app`)
-6. Tekshirish: `https://YOUR-BACKEND.up.railway.app/api/health/` → `{"status":"ok"}`
+6. Tekshirish: `https://YOUR-BACKEND.up.railway.app/health/` → `{"status":"ok"}`
 
 ### Migratsiya va demo ma’lumot
 
@@ -80,6 +81,7 @@ python manage.py seed_demo
 |----------|--------|
 | CORS xatosi | `CORS_ALLOWED_ORIGINS` da frontend URL to‘g‘ri va `https://` bilan |
 | 502 / DisallowedHost | `ALLOWED_HOSTS=.up.railway.app` yoki aniq backend domen |
+| Container to‘xtaydi (Stopping Container) | `SECURE_SSL_REDIRECT=False`, health: `/health/`, redeploy |
 | Admin stil yo‘q | `collectstatic` buildda ishlaydi (`railway.toml`) |
 | API ulanmaydi | Frontend `VITE_API_URL` va qayta build |
 | Telegram ishlamaydi | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` backend Variables |
