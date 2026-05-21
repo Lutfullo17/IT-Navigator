@@ -90,6 +90,7 @@ python manage.py seed_demo
 | CORS xatosi | `CORS_ALLOWED_ORIGINS` da frontend URL to‘g‘ri va `https://` bilan |
 | 502 / DisallowedHost | `ALLOWED_HOSTS=.up.railway.app` yoki aniq backend domen |
 | Container to‘xtaydi (Stopping Container) | `SECURE_SSL_REDIRECT=False`, health: `/health/`, redeploy |
+| `npm: command not found` | `nixpacks.toml` da `providers = ["python", "node"]` bo‘lishi kerak |
 | Admin stil yo‘q | `collectstatic` buildda ishlaydi (`railway.toml`) |
 | API ulanmaydi | Frontend `VITE_API_URL` va qayta build |
 | Telegram ishlamaydi | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` backend Variables |
