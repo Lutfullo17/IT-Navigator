@@ -29,6 +29,8 @@ ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
 railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '').strip()
 if railway_domain and railway_domain not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(railway_domain)
+if 'healthcheck.railway.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('healthcheck.railway.app')
 if not DEBUG:
     for host in ('.up.railway.app', '.railway.app'):
         if host not in ALLOWED_HOSTS:
