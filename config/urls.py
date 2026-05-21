@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/health/', health_check),
     path('api/health', health_check),
     path('api/feedback/', include('common.urls')),
-    # React SPA (/, /register, /home, …) — API/admin/health dan keyin
-    re_path(r'^(?!api/|admin/|health|static/).*$', spa_index),
+    # React SPA — assets/ WhiteNoise beradi; qolgan route'lar index.html
+    path('', spa_index, name='spa-root'),
+    re_path(r'^(?!api/|admin/|health|static/|assets/).*$', spa_index, name='spa-fallback'),
 ]

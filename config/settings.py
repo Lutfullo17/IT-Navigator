@@ -146,6 +146,12 @@ STORAGES = {
 
 CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS') or CORS_ALLOWED_ORIGINS.copy()
+if railway_domain:
+    _origin = f'https://{railway_domain}'
+    if _origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(_origin)
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
 
 if DEBUG and env_bool('CORS_ALLOW_ALL_ORIGINS', True):
     CORS_ALLOW_ALL_ORIGINS = True
