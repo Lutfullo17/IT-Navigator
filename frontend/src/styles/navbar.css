@@ -46,12 +46,21 @@
   border-color: rgba(59, 130, 246, 0.35);
 }
 
+.navbar-lang {
+  flex-shrink: 0;
+}
+
+.navbar-lang.lang-switcher--compact {
+  padding: 6px 10px;
+}
+
 .navbar-logo {
   font-size: 17px;
   font-weight: 800;
   color: var(--text);
   text-decoration: none;
   letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
 .navbar-user {

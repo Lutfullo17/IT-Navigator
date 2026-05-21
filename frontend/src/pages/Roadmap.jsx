@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getDirections } from '../api/directions';
 import { getRoadmapPlan } from '../api/roadmap';
+import { useLanguage } from '../context/LanguageContext';
 import { DIRECTION_ICONS } from '../components/Icons';
 import ScrollReveal from '../components/ScrollReveal';
 import { googleSearchUrl, youtubeSearchUrl } from '../utils/searchLinks';
 
 function Roadmap() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const directionSlug = searchParams.get('direction');
 
@@ -22,12 +24,12 @@ function Roadmap() {
         const data = await getDirections();
         setDirections(data);
       } catch {
-        setError('Yo\'nalishlarni yuklab bo\'lmadi.');
+        setError(t('common.errorLoadDirections'));
       }
     }
 
     loadDirections();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!directionSlug) {
@@ -43,7 +45,7 @@ function Roadmap() {
         const data = await getRoadmapPlan(directionSlug);
         setPlan(data);
       } catch {
-        setError('O\'rganish rejasini yuklab bo\'lmadi.');
+        setError(t('roadmap.errorLoad'));
         setPlan(null);
       } finally {
         setLoading(false);
@@ -51,7 +53,7 @@ function Roadmap() {
     }
 
     loadPlan();
-  }, [directionSlug]);
+  }, [directionSlug, t]);
 
   function handleSelectDirection(slug) {
     navigate(`/roadmap?direction=${slug}`);
@@ -61,8 +63,8 @@ function Roadmap() {
     return (
       <div className="roadmap-page">
         <header className="page-header">
-          <h1>O&apos;rganish rejasi</h1>
-          <p>O&apos;rganmoqchi bo&apos;lgan yo&apos;nalishingizni tanlang — to&apos;liq tushuntirish va foydali havolalar.</p>
+          <h1>{t('roadmap.title')}</h1>
+          <p>{t('roadmap.subtitle')}</p>
         </header>
 
         <div className="roadmap-direction-grid">
@@ -90,15 +92,15 @@ function Roadmap() {
   }
 
   if (loading) {
-    return <div className="page-loading">Yuklanmoqda...</div>;
+    return <div className="page-loading">{t('common.loading')}</div>;
   }
 
   if (!plan) {
     return (
       <div className="roadmap-page">
-        <p className="roadmap-empty">{error || 'Reja topilmadi.'}</p>
+        <p className="roadmap-empty">{error || t('roadmap.notFound')}</p>
         <button type="button" className="btn-secondary" onClick={() => navigate('/roadmap')}>
-          Yo&apos;nalish tanlash
+          {t('common.selectDirection')}
         </button>
       </div>
     );
@@ -112,26 +114,26 @@ function Roadmap() {
           className="back-link roadmap-back-btn"
           onClick={() => navigate('/roadmap')}
         >
-          ← Yo&apos;nalish tanlash
+          {t('common.backSelectDirection')}
         </button>
-        <h1>{plan.name} — o&apos;rganish rejasi</h1>
+        <h1>{t('roadmap.planTitle', { name: plan.name })}</h1>
         <p>{plan.short_description}</p>
       </header>
 
       <article className="roadmap-article">
         <div className="roadmap-meta">
-          <span><strong>Qiyinlik:</strong> {plan.difficulty}</span>
-          <span><strong>O&apos;rganasiz:</strong> {plan.what_you_learn}</span>
-          <span><strong>Ish bozori:</strong> {plan.job_market}</span>
+          <span><strong>{t('roadmap.metaDifficulty')}</strong> {plan.difficulty}</span>
+          <span><strong>{t('roadmap.metaLearn')}</strong> {plan.what_you_learn}</span>
+          <span><strong>{t('roadmap.metaMarket')}</strong> {plan.job_market}</span>
         </div>
 
         <section className="roadmap-highlight">
-          <h2>Kimga mos?</h2>
+          <h2>{t('roadmap.whoFor')}</h2>
           <p>{plan.who_is_it_for}</p>
         </section>
 
         <section className="roadmap-highlight roadmap-highlight--warm">
-          <h2>Real hayot misoli</h2>
+          <h2>{t('roadmap.realExample')}</h2>
           <p>{plan.real_life_example}</p>
         </section>
 
@@ -146,8 +148,8 @@ function Roadmap() {
         ))}
 
         <footer className="roadmap-resources">
-          <h2>Yana o&apos;rganmoqchimisiz?</h2>
-          <p>Quyidagi tugmalar orqali internetda qo\'shimcha maqola va videolar topishingiz mumkin.</p>
+          <h2>{t('roadmap.resourcesTitle')}</h2>
+          <p>{t('roadmap.resourcesHint')}</p>
           <div className="roadmap-resource-buttons">
             <a
               href={googleSearchUrl(plan.google_query)}
@@ -155,7 +157,7 @@ function Roadmap() {
               rel="noreferrer"
               className="btn-primary roadmap-resource-btn"
             >
-              Maqola
+              {t('roadmap.article')}
             </a>
             <a
               href={youtubeSearchUrl(plan.youtube_query)}
@@ -163,7 +165,7 @@ function Roadmap() {
               rel="noreferrer"
               className="btn-secondary roadmap-resource-btn"
             >
-              YouTube
+              {t('roadmap.youtube')}
             </a>
           </div>
         </footer>

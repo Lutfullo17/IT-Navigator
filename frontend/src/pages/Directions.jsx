@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getDirections } from '../api/directions';
+import { useLanguage } from '../context/LanguageContext';
 import ScrollReveal from '../components/ScrollReveal';
 import { DIRECTION_ICONS } from '../components/Icons';
 
 function Directions() {
+  const { t } = useLanguage();
   const [directions, setDirections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,17 +17,17 @@ function Directions() {
         const data = await getDirections();
         setDirections(data);
       } catch {
-        setError('Yo\'nalishlarni yuklab bo\'lmadi.');
+        setError(t('common.errorLoadDirections'));
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [t]);
 
   if (loading) {
-    return <div className="page-loading">Yuklanmoqda...</div>;
+    return <div className="page-loading">{t('common.loading')}</div>;
   }
 
   if (error) {
@@ -36,8 +38,8 @@ function Directions() {
     <div className="directions-page">
       <ScrollReveal>
         <header className="page-header">
-          <h1>IT yo&apos;nalishlar</h1>
-          <p>Har biri oddiy tilda tushuntirilgan — qo&apos;rqmang, o&apos;qib ko&apos;ring.</p>
+          <h1>{t('directions.title')}</h1>
+          <p>{t('directions.subtitle')}</p>
         </header>
       </ScrollReveal>
 
@@ -52,7 +54,7 @@ function Directions() {
                 </span>
                 <h2>{direction.name}</h2>
                 <p>{direction.short_description}</p>
-                <span className="direction-meta">Qiyinlik: {direction.difficulty}</span>
+                <span className="direction-meta">{t('directions.difficulty', { value: direction.difficulty })}</span>
               </Link>
             </ScrollReveal>
           );

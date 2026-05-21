@@ -9,6 +9,30 @@ DIRECTION_LABELS = {
     'cybersecurity': 'Kiber xavfsizlik',
 }
 
+DIRECTION_LABELS_RU = {
+    'frontend': 'Внешний вид сайта',
+    'backend': 'Внутренние системы',
+    'data-analyst': 'Анализ данных',
+    'ui-ux': 'Удобный дизайн',
+    'mobile': 'Мобильные приложения',
+    'cybersecurity': 'Кибербезопасность',
+}
+
+DIRECTION_LABELS_EN = {
+    'frontend': 'Website look & feel',
+    'backend': 'Internal systems',
+    'data-analyst': 'Data analysis',
+    'ui-ux': 'Easy-to-use design',
+    'mobile': 'Mobile apps',
+    'cybersecurity': 'Cybersecurity',
+}
+
+DIRECTION_LABELS_BY_LANG = {
+    'uz': DIRECTION_LABELS,
+    'ru': DIRECTION_LABELS_RU,
+    'en': DIRECTION_LABELS_EN,
+}
+
 DIRECTION_SIMPLE_DESC = {
     'frontend': 'Sayt va ilovaning chiroyli, ko\'rinadigan qismi',
     'backend': 'Sayt va ilovaning ichki, ko\'rinmaydigan qismi',
@@ -34,8 +58,9 @@ LEGACY_NAME_TO_SLUG = {
 }
 
 
-def get_direction_label(slug, fallback=''):
-    return DIRECTION_LABELS.get(slug, fallback or slug)
+def get_direction_label(slug, fallback='', language='uz'):
+    labels = DIRECTION_LABELS_BY_LANG.get(language, DIRECTION_LABELS)
+    return labels.get(slug, DIRECTION_LABELS.get(slug, fallback or slug))
 
 
 def resolve_direction_slug(entry):
@@ -51,18 +76,19 @@ def resolve_direction_slug(entry):
     return slug
 
 
-def localize_results(results):
-    """AI va eski natijalardagi inglizcha nomlarni o'zbekchaga almashtiradi."""
+def localize_results(results, language='uz'):
+    """AI natijalaridagi nomlarni tanlangan tilga moslashtiradi."""
     if not isinstance(results, list):
         return results
 
+    labels = DIRECTION_LABELS_BY_LANG.get(language, DIRECTION_LABELS)
     localized = []
     for item in results:
         entry = dict(item)
         slug = resolve_direction_slug(entry)
         if slug:
             entry['slug'] = slug
-        if slug in DIRECTION_LABELS:
-            entry['name'] = DIRECTION_LABELS[slug]
+        if slug in labels:
+            entry['name'] = labels[slug]
         localized.append(entry)
     return localized

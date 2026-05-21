@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getPreferredLanguage, isLoggedIn } from '../api/auth';
+import { useLanguage } from '../context/LanguageContext';
 import { startTest, submitAnswers } from '../api/test';
 
 function Test() {
+  const { t } = useLanguage();
   const [step, setStep] = useState('intro');
   const [session, setSession] = useState(null);
   const [answers, setAnswers] = useState({});
@@ -16,9 +18,9 @@ function Test() {
     return (
       <div className="test-page test-page--dark">
         <div className="test-intro">
-          <h1>Test</h1>
-          <p>Test ishlash uchun avval tizimga kiring.</p>
-          <Link to="/register" className="btn-primary">Ro&apos;yxatdan o&apos;tish</Link>
+          <h1>{t('test.title')}</h1>
+          <p>{t('test.loginRequired')}</p>
+          <Link to="/register" className="btn-primary">{t('nav.register')}</Link>
         </div>
       </div>
     );
@@ -35,7 +37,7 @@ function Test() {
       setCurrentIndex(0);
       setStep('questions');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Testni boshlab bo\'lmadi.');
+      setError(err.response?.data?.detail || t('test.error.start'));
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ function Test() {
     }));
 
     if (answersList.length < total) {
-      setError('Barcha savollarga javob bering.');
+      setError(t('test.error.allAnswers'));
       return;
     }
 
@@ -88,7 +90,7 @@ function Test() {
       setError(
         data?.detail
         || data?.answers?.[0]
-        || 'Javoblarni yuborib bo\'lmadi.'
+        || t('test.error.submit')
       );
     } finally {
       setLoading(false);
@@ -99,18 +101,15 @@ function Test() {
     return (
       <div className="test-page test-page--dark">
         <div className="test-intro">
-          <Link to="/directions" className="back-link">← Yo&apos;nalishlar</Link>
-          <h1>Yo&apos;nalish aniqlash testi</h1>
-          <p>
-            15 ta oddiy savolga javob bering. IT haqida bilishingiz shart emas —
-            faqat o&apos;zingiz haqingizda gap ketadi.
-          </p>
-          <p className="test-note">To&apos;g&apos;ri yoki noto&apos;g&apos;ri javob yo&apos;q. Xohlaganingizni tanlang.</p>
+          <Link to="/directions" className="back-link">{t('common.backDirections')}</Link>
+          <h1>{t('test.intro.title')}</h1>
+          <p>{t('test.intro.p1')}</p>
+          <p className="test-note">{t('test.intro.note')}</p>
 
           {error && <p className="auth-error">{error}</p>}
 
           <button type="button" className="btn-primary test-start-btn" onClick={handleStart} disabled={loading}>
-            {loading ? 'Yuklanmoqda...' : 'Testni boshlash'}
+            {loading ? t('common.loading') : t('test.start')}
           </button>
         </div>
       </div>
@@ -159,7 +158,7 @@ function Test() {
               onClick={handleBack}
               disabled={currentIndex === 0}
             >
-              Orqaga
+              {t('test.nav.back')}
             </button>
 
             {isLast ? (
@@ -169,7 +168,7 @@ function Test() {
                 onClick={handleSubmit}
                 disabled={loading || !hasAnswer}
               >
-                {loading ? 'Tahlil qilinmoqda...' : 'Natijani ko\'rish'}
+                {loading ? t('test.nav.analyzing') : t('test.nav.results')}
               </button>
             ) : (
               <button
@@ -178,7 +177,7 @@ function Test() {
                 onClick={handleNext}
                 disabled={!hasAnswer}
               >
-                Keyingi
+                {t('test.nav.next')}
               </button>
             )}
           </div>
@@ -191,8 +190,8 @@ function Test() {
     return (
       <div className="test-page test-page--dark">
         <div className="test-results">
-          <h1>Sizga mos yo&apos;nalishlar</h1>
-          <p className="test-note">Bu tavsiyalar — sizni cheklamaydi, yo&apos;l ko&apos;rsatadi.</p>
+          <h1>{t('test.results.title')}</h1>
+          <p className="test-note">{t('test.results.note')}</p>
 
           <div className="results-list">
             {results.map((item) => (
@@ -203,15 +202,15 @@ function Test() {
                 </div>
                 <p>{item.reason}</p>
                 <Link to={`/directions/${item.slug}`} className="result-link">
-                  Batafsil o&apos;qish →
+                  {t('common.readMore')}
                 </Link>
               </div>
             ))}
           </div>
 
           <div className="test-result-actions">
-            <Link to="/directions" className="btn-secondary">Barcha yo&apos;nalishlar</Link>
-            <Link to="/tasks" className="btn-primary">Vazifalarni sinash</Link>
+            <Link to="/directions" className="btn-secondary">{t('test.results.allDirections')}</Link>
+            <Link to="/tasks" className="btn-primary">{t('test.results.tryTasks')}</Link>
           </div>
         </div>
       </div>

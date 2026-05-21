@@ -8,6 +8,7 @@ export function getPreferredLanguage() {
 
 export function setPreferredLanguage(language) {
   localStorage.setItem(LANGUAGE_KEY, language);
+  window.dispatchEvent(new Event('language-change'));
 }
 
 function notifyAuthChange() {

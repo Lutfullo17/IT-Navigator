@@ -24,19 +24,29 @@ def dashboard(request):
     tasks_liked = UserTaskCompletion.objects.filter(user=user, is_completed=True, liked=True).count()
     tasks_disliked = UserTaskCompletion.objects.filter(user=user, is_completed=True, liked=False).count()
 
-    latest_test = TestSession.objects.filter(user=user, is_completed=True).first()
+    latest_test = (
+        TestSession.objects.filter(user=user, is_completed=True)
+        .order_by('-completed_at')
+        .first()
+    )
 
     profile = getattr(user, 'profile', None)
+    language = profile.preferred_language if profile else 'uz'
 
-    latest_results = localize_results(latest_test.results) if latest_test else []
+    latest_results = (
+        localize_results(latest_test.results, language=language)
+        if latest_test and latest_test.results
+        else []
+    )
 
     return Response({
-        'preferred_language': profile.preferred_language if profile else 'uz',
+        'preferred_language': language,
         'onboarding_completed': profile.onboarding_completed if profile else False,
         'tests': {
             'started': tests_started,
             'completed': tests_completed,
             'latest_results': latest_results,
+            'completed_at': latest_test.completed_at.isoformat() if latest_test and latest_test.completed_at else None,
         },
         'tasks': {
             'completed': tasks_completed,

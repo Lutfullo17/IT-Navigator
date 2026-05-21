@@ -89,7 +89,13 @@ class ProfileUpdateSerializer(serializers.Serializer):
     preferred_language = serializers.ChoiceField(choices=Profile.LANGUAGE_CHOICES, required=False)
 
     def update(self, instance, validated_data):
-        profile = instance.profile
+        profile, _ = Profile.objects.get_or_create(
+            user=instance,
+            defaults={
+                'phone': instance.username,
+                'full_name': (instance.first_name or '').strip(),
+            },
+        )
 
         if 'preferred_language' in validated_data:
             profile.preferred_language = validated_data['preferred_language']

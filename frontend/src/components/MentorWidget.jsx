@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { getPreferredLanguage } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { startChat, sendMessage } from '../api/mentor';
 import { useTypewriter } from '../hooks/useTypewriter';
-import { IconClose, IconSend, IconSpark } from './Icons';
+import { IconClose, IconSend } from './Icons';
+
+const HINT_DISMISSED_KEY = 'mentor-fab-hint-dismissed';
 
 function TypingMessage({ content, animate, onDone }) {
   const typed = useTypewriter(content, 16, animate);
@@ -24,7 +27,11 @@ function TypingMessage({ content, animate, onDone }) {
 
 function MentorWidget() {
   const { loggedIn } = useAuth();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(
+    () => localStorage.getItem(HINT_DISMISSED_KEY) === '1',
+  );
   const [session, setSession] = useState(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,10 +45,10 @@ function MentorWidget() {
       setLoading(true);
       startChat()
         .then(setSession)
-        .catch(() => setError('Suhbatni boshlab bo\'lmadi.'))
+        .catch(() => setError(t('mentor.error.start')))
         .finally(() => setLoading(false));
     }
-  }, [open, loggedIn, session]);
+  }, [open, loggedIn, session, t]);
 
   useEffect(() => {
     if (open) {
@@ -60,6 +67,11 @@ function MentorWidget() {
   }, [open]);
 
   if (!loggedIn) return null;
+
+  function dismissHint() {
+    setHintDismissed(true);
+    localStorage.setItem(HINT_DISMISSED_KEY, '1');
+  }
 
   async function handleSend(e) {
     e.preventDefault();
@@ -87,7 +99,7 @@ function MentorWidget() {
         setTypingId(lastAssistant.id);
       }
     } catch {
-      setError('Xabar yuborib bo\'lmadi.');
+      setError(t('mentor.error.send'));
       setSession(session);
     } finally {
       setLoading(false);
@@ -96,42 +108,59 @@ function MentorWidget() {
 
   return (
     <>
-      <button
-        type="button"
-        className={`mentor-fab ${open ? 'mentor-fab--hidden' : ''}`}
-        onClick={() => setOpen(true)}
-        aria-label="AI Mentor"
-      >
-        <IconSpark size={26} />
-      </button>
+      <div className={`mentor-fab-wrap ${open ? 'mentor-fab-wrap--hidden' : ''}`}>
+        {!hintDismissed && (
+          <div className="mentor-fab-hint" role="status">
+            <p>{t('mentor.fabHint')}</p>
+            <button
+              type="button"
+              className="mentor-fab-hint-close"
+              onClick={dismissHint}
+              aria-label={t('nav.close')}
+            >
+              <IconClose size={14} />
+            </button>
+          </div>
+        )}
+        <button
+          type="button"
+          className="mentor-fab"
+          onClick={() => setOpen(true)}
+          aria-label={t('mentor.fabLabel')}
+        >
+          <span className="mentor-fab-label">{t('mentor.fabLabel')}</span>
+        </button>
+      </div>
 
       {open && (
         <div className="mentor-panel">
           <header className="mentor-panel-header">
             <div>
-              <strong>AI Mentor</strong>
-              <span>Savollaringizga javob beraman</span>
+              <strong>{t('mentor.title')}</strong>
+              <span>{t('mentor.panelSubtitle')}</span>
             </div>
-            <button type="button" className="mentor-panel-close" onClick={() => setOpen(false)} aria-label="Yopish">
+            <button type="button" className="mentor-panel-close" onClick={() => setOpen(false)} aria-label={t('nav.close')}>
               <IconClose size={20} />
             </button>
           </header>
 
           <div className="mentor-panel-messages">
             {loading && !session?.messages?.length && (
-              <p className="mentor-panel-loading">Yuklanmoqda...</p>
+              <p className="mentor-panel-loading">{t('common.loading')}</p>
             )}
 
             {session?.messages?.length === 0 && !loading && (
               <div className="mentor-panel-welcome">
-                <p>Salom! IT yo&apos;nalishlari haqida oddiy tilda so&apos;rang.</p>
-                <p>Masalan: &quot;Qaysi yo&apos;nalish osonroq?&quot;</p>
+                <p>{t('mentor.welcome')}</p>
+                <p>{t('mentor.welcomeExample')}</p>
               </div>
             )}
 
             {session?.messages?.map((msg) => (
               <div key={msg.id} className={`mentor-panel-msg mentor-panel-msg--${msg.role}`}>
-                <span className="mentor-panel-role">{msg.role === 'user' ? 'Siz' : 'AI'}</span>
+                <span className="mentor-panel-role">
+                  {msg.role === 'user' ? t('mentor.roleUser') : t('mentor.roleAssistant')}
+                </span>
                 {msg.role === 'assistant' && msg.id === typingId ? (
                   <TypingMessage
                     content={msg.content}
@@ -155,10 +184,10 @@ function MentorWidget() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Xabar yozing..."
+              placeholder={t('mentor.inputPlaceholder')}
               disabled={loading || !session}
             />
-            <button type="submit" disabled={loading || !session || !input.trim()} aria-label="Yuborish">
+            <button type="submit" disabled={loading || !session || !input.trim()} aria-label={t('mentor.send')}>
               <IconSend size={18} />
             </button>
           </form>

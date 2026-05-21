@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import Navbar from './components/Navbar';
 import MentorWidget from './components/MentorWidget';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -14,6 +15,7 @@ import Roadmap from './pages/Roadmap';
 import Progress from './pages/Progress';
 import './styles/global.css';
 import './styles/home.css';
+import './styles/footer.css';
 import './styles/auth.css';
 import './styles/directions.css';
 import './styles/test.css';
@@ -45,6 +47,7 @@ function Layout() {
 function App() {
   return (
     <AuthProvider>
+      <LanguageProvider>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -62,6 +65,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

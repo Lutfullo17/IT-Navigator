@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useNavbarScroll } from '../hooks/useNavbarScroll';
+import LanguageSwitcher from './LanguageSwitcher';
 import {
   IconClose,
   IconCompass,
@@ -13,18 +15,19 @@ import {
   IconTest,
 } from './Icons';
 
-const NAV_LINKS = [
-  { to: '/home', label: 'Bosh sahifa', icon: IconHome, auth: true },
-  { to: '/directions', label: "Yo'nalishlar", icon: IconCompass, auth: true },
-  { to: '/test', label: 'Test', icon: IconTest, auth: true },
-  { to: '/tasks', label: 'Vazifalar', icon: IconTasks, auth: true },
-  { to: '/roadmap', label: "O'rganish rejasi", icon: IconRoadmap, auth: true },
-  { to: '/progress', label: 'Natijalarim', icon: IconProgress, auth: true },
+const NAV_LINK_KEYS = [
+  { to: '/home', labelKey: 'nav.home', icon: IconHome, auth: true },
+  { to: '/directions', labelKey: 'nav.directions', icon: IconCompass, auth: true },
+  { to: '/test', labelKey: 'nav.test', icon: IconTest, auth: true },
+  { to: '/tasks', labelKey: 'nav.tasks', icon: IconTasks, auth: true },
+  { to: '/roadmap', labelKey: 'nav.roadmap', icon: IconRoadmap, auth: true },
+  { to: '/progress', labelKey: 'nav.progress', icon: IconProgress, auth: true },
 ];
 
 function Navbar() {
   const navigate = useNavigate();
   const { loggedIn, logout, user } = useAuth();
+  const { t } = useLanguage();
   const scrolled = useNavbarScroll();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -45,7 +48,7 @@ function Navbar() {
     setMenuOpen(false);
   }
 
-  const visibleLinks = NAV_LINKS.filter((link) => loggedIn && link.auth);
+  const visibleLinks = NAV_LINK_KEYS.filter((link) => loggedIn && link.auth);
 
   return (
     <>
@@ -54,15 +57,17 @@ function Navbar() {
           <button
             type="button"
             className="navbar-toggle"
-            aria-label={menuOpen ? 'Menyuni yopish' : 'Menyuni ochish'}
+            aria-label={menuOpen ? t('nav.close') : t('nav.sections')}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
           >
             {menuOpen ? <IconClose size={22} /> : <IconMenu size={22} />}
           </button>
 
+          <LanguageSwitcher compact className="navbar-lang" />
+
           <Link to={loggedIn ? '/home' : '/register'} className="navbar-logo" onClick={closeMenu}>
-            IT Navigator
+            {t('app.name')}
           </Link>
 
           {loggedIn && user?.full_name && (
@@ -73,8 +78,8 @@ function Navbar() {
 
       <aside className={`sidebar ${menuOpen ? 'sidebar--open' : ''}`}>
         <div className="sidebar-header">
-          <strong>Bo&apos;limlar</strong>
-          <button type="button" onClick={closeMenu} aria-label="Yopish">
+          <strong>{t('nav.sections')}</strong>
+          <button type="button" onClick={closeMenu} aria-label={t('nav.close')}>
             <IconClose size={20} />
           </button>
         </div>
@@ -90,7 +95,7 @@ function Navbar() {
                 onClick={closeMenu}
               >
                 <Icon size={20} />
-                {link.label}
+                {t(link.labelKey)}
               </NavLink>
             );
           })}
@@ -99,19 +104,21 @@ function Navbar() {
         <div className="sidebar-footer">
           {loggedIn ? (
             <button type="button" onClick={handleLogout} className="sidebar-logout">
-              Chiqish
+              {t('nav.logout')}
             </button>
           ) : (
             <>
-              <Link to="/login" className="sidebar-link" onClick={closeMenu}>Kirish</Link>
-              <Link to="/register" className="btn-primary sidebar-register" onClick={closeMenu}>Ro&apos;yxatdan o&apos;tish</Link>
+              <Link to="/login" className="sidebar-link" onClick={closeMenu}>{t('nav.login')}</Link>
+              <Link to="/register" className="btn-primary sidebar-register" onClick={closeMenu}>
+                {t('nav.register')}
+              </Link>
             </>
           )}
         </div>
       </aside>
 
       {menuOpen && (
-        <button type="button" className="sidebar-backdrop" aria-label="Menyuni yopish" onClick={closeMenu} />
+        <button type="button" className="sidebar-backdrop" aria-label={t('nav.close')} onClick={closeMenu} />
       )}
     </>
   );

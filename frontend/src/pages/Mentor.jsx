@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getPreferredLanguage, isLoggedIn } from '../api/auth';
+import { useLanguage } from '../context/LanguageContext';
 import { startChat, sendMessage } from '../api/mentor';
 
 function Mentor() {
+  const { t } = useLanguage();
   const [session, setSession] = useState(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,14 +21,14 @@ function Mentor() {
         const data = await startChat();
         setSession(data);
       } catch (err) {
-        setError(err.response?.data?.detail || 'Suhbatni boshlab bo\'lmadi.');
+        setError(err.response?.data?.detail || t('mentor.error.start'));
       } finally {
         setLoading(false);
       }
     }
 
     init();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,9 +38,9 @@ function Mentor() {
     return (
       <div className="mentor-page">
         <div className="mentor-intro">
-          <h1>AI Mentor</h1>
-          <p>Suhbatlashish uchun avval tizimga kiring.</p>
-          <Link to="/login" className="btn-primary">Kirish</Link>
+          <h1>{t('mentor.title')}</h1>
+          <p>{t('mentor.loginRequired')}</p>
+          <Link to="/login" className="btn-primary">{t('nav.login')}</Link>
         </div>
       </div>
     );
@@ -57,7 +59,7 @@ function Mentor() {
       const data = await sendMessage(session.id, text, getPreferredLanguage());
       setSession(data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Xabar yuborib bo\'lmadi.');
+      setError(err.response?.data?.detail || t('mentor.error.send'));
     } finally {
       setLoading(false);
     }
@@ -66,26 +68,28 @@ function Mentor() {
   return (
     <div className="mentor-page">
       <header className="mentor-header">
-        <Link to="/" className="back-link">← Bosh sahifa</Link>
-        <h1>AI Mentor</h1>
-        <p>Savollaringizni bering — oddiy tilda javob olasiz.</p>
+        <Link to="/" className="back-link">{t('common.backHome')}</Link>
+        <h1>{t('mentor.title')}</h1>
+        <p>{t('mentor.pageSubtitle')}</p>
       </header>
 
       <div className="mentor-chat">
         {loading && !session?.messages?.length && (
-          <p className="mentor-loading">Yuklanmoqda...</p>
+          <p className="mentor-loading">{t('common.loading')}</p>
         )}
 
         {session?.messages?.length === 0 && !loading && (
           <div className="mentor-welcome">
-            <p>Salom! IT yo&apos;nalishlari, o&apos;rganish yoki motivatsiya haqida so&apos;rang.</p>
-            <p className="mentor-hint">Masalan: &quot;Python nima?&quot; yoki &quot;Backend qiyinmi?&quot;</p>
+            <p>{t('mentor.pageWelcome')}</p>
+            <p className="mentor-hint">{t('mentor.pageExample')}</p>
           </div>
         )}
 
         {session?.messages?.map((msg) => (
           <div key={msg.id} className={`mentor-message ${msg.role}`}>
-            <span className="mentor-role">{msg.role === 'user' ? 'Siz' : 'Mentor'}</span>
+            <span className="mentor-role">
+              {msg.role === 'user' ? t('mentor.roleUser') : t('mentor.roleAssistant')}
+            </span>
             <p>{msg.content}</p>
           </div>
         ))}
@@ -100,11 +104,11 @@ function Mentor() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Xabar yozing..."
+          placeholder={t('mentor.inputPlaceholder')}
           disabled={loading || !session}
         />
         <button type="submit" disabled={loading || !session}>
-          {loading ? '...' : 'Yuborish'}
+          {loading ? '...' : t('mentor.send')}
         </button>
       </form>
     </div>

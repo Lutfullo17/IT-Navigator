@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getDirections } from '../api/directions';
 import { getTasks, completeTask } from '../api/tasks';
+import { useLanguage } from '../context/LanguageContext';
 import { DIRECTION_ICONS } from '../components/Icons';
 import ScrollReveal from '../components/ScrollReveal';
 import { taskDirectionIntro, taskDirectionTitle } from '../utils/taskLabels';
 
 function Tasks() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const directionSlug = searchParams.get('direction');
 
@@ -25,12 +27,12 @@ function Tasks() {
         const data = await getDirections();
         setDirections(data);
       } catch {
-        setError('Yo\'nalishlarni yuklab bo\'lmadi.');
+        setError(t('common.errorLoadDirections'));
       }
     }
 
     loadDirections();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!directionSlug) {
@@ -50,14 +52,14 @@ function Tasks() {
         const data = await getTasks(directionSlug);
         setTasks(data);
       } catch {
-        setError('Vazifalarni yuklab bo\'lmadi.');
+        setError(t('tasks.errorLoad'));
       } finally {
         setLoading(false);
       }
     }
 
     loadTasks();
-  }, [directionSlug]);
+  }, [directionSlug, t]);
 
   function handleSelectDirection(slug) {
     navigate(`/tasks?direction=${slug}`);
@@ -82,7 +84,7 @@ function Tasks() {
         setTaskIndex((i) => i + 1);
       }
     } catch {
-      setError('Natijani saqlab bo\'lmadi.');
+      setError(t('tasks.errorSave'));
     } finally {
       setSubmitting(false);
     }
@@ -100,8 +102,8 @@ function Tasks() {
     return (
       <div className="tasks-page">
         <header className="page-header">
-          <h1>Vazifalar</h1>
-          <p>Yo&apos;nalish tanlang — har birida 10 ta oddiy hayotiy vazifa ketma-ket chiqadi.</p>
+          <h1>{t('tasks.title')}</h1>
+          <p>{t('tasks.subtitle')}</p>
         </header>
 
         <div className="tasks-direction-grid">
@@ -116,7 +118,7 @@ function Tasks() {
                 >
                   <Icon size={28} />
                   <h2>{direction.name}</h2>
-                  <p>{taskDirectionIntro(direction.name)}</p>
+                  <p>{taskDirectionIntro(direction.name, t)}</p>
                 </button>
               </ScrollReveal>
             );
@@ -127,36 +129,37 @@ function Tasks() {
   }
 
   if (loading) {
-    return <div className="page-loading">Yuklanmoqda...</div>;
+    return <div className="page-loading">{t('common.loading')}</div>;
   }
 
   const directionTitle = selectedDirection
-    ? taskDirectionTitle(selectedDirection.name)
-    : 'Vazifalar';
+    ? taskDirectionTitle(selectedDirection.name, t)
+    : t('tasks.title');
 
   return (
     <div className="tasks-page">
       <header className="page-header">
         <button type="button" className="back-link tasks-back-btn" onClick={() => navigate('/tasks')}>
-          ← Yo&apos;nalish tanlash
+          {t('common.backSelectDirection')}
         </button>
         <h1>{directionTitle}</h1>
         {selectedDirection && (
-          <p>{taskDirectionIntro(selectedDirection.name)} — birma-bir o&apos;qing.</p>
+          <p>
+            {taskDirectionIntro(selectedDirection.name, t)} {t('tasks.readSequentially')}
+          </p>
         )}
       </header>
 
       {tasks.length === 0 && (
-        <p className="tasks-empty">Bu yo&apos;nalishda hozircha vazifa yo&apos;q.</p>
+        <p className="tasks-empty">{t('tasks.empty')}</p>
       )}
 
       {finished ? (
         <main className="tasks-detail tasks-detail--single">
           <div className="tasks-finish">
-            <h2>Bu yo&apos;nalish sizga maqulmi?</h2>
+            <h2>{t('tasks.finishQuestion')}</h2>
             <p>
-              {selectedDirection?.name} bo&apos;yicha barcha vazifalarni ko&apos;rib chiqdingiz.
-              Agar yoqsa, o&apos;rganish rejasiga o&apos;tishingiz mumkin.
+              {t('tasks.finishText', { name: selectedDirection?.name || '' })}
             </p>
             <div className="tasks-finish-buttons">
               <button
@@ -164,14 +167,14 @@ function Tasks() {
                 className="btn-primary"
                 onClick={() => handleDirectionFit(true)}
               >
-                Ha
+                {t('common.yes')}
               </button>
               <button
                 type="button"
                 className="btn-secondary"
                 onClick={() => handleDirectionFit(false)}
               >
-                Yo&apos;q, boshqa yo&apos;nalish
+                {t('common.no')}
               </button>
             </div>
           </div>
@@ -179,7 +182,7 @@ function Tasks() {
       ) : activeTask && (
         <main className="tasks-detail tasks-detail--single">
           <div className="tasks-progress">
-            <span>Vazifa {taskIndex + 1} / {tasks.length}</span>
+            <span>{t('tasks.taskProgress', { current: taskIndex + 1, total: tasks.length })}</span>
             <div className="tasks-progress-bar">
               <div
                 className="tasks-progress-fill"
@@ -192,13 +195,13 @@ function Tasks() {
           <p className="tasks-description">{activeTask.description}</p>
 
           <div className="tasks-instruction">
-            <h3>Vazifa</h3>
+            <h3>{t('tasks.taskHeading')}</h3>
             <p>{activeTask.instruction}</p>
           </div>
 
           {activeTask.task_data?.term_hint && (
             <div className="tasks-hint">
-              Nega bu vazifa? {activeTask.task_data.term_hint}
+              {t('tasks.whyTask', { hint: activeTask.task_data.term_hint })}
             </div>
           )}
 
@@ -209,7 +212,7 @@ function Tasks() {
               onClick={handleYana}
               disabled={submitting}
             >
-              {submitting ? 'Saqlanmoqda...' : 'Yana'}
+              {submitting ? t('common.saving') : t('tasks.next')}
             </button>
           </div>
 

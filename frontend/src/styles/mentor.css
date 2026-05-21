@@ -147,10 +147,94 @@
 }
 
 /* Floating AI Mentor widget */
-.mentor-fab {
+.mentor-fab-wrap {
   position: fixed;
   right: 24px;
   bottom: 24px;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.mentor-fab-wrap--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+.mentor-fab-hint {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: min(260px, calc(100vw - 100px));
+  padding: 10px 12px 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  animation: fabHintIn 0.35s ease both;
+}
+
+.mentor-fab-hint::after {
+  content: '';
+  position: absolute;
+  right: 22px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+.mentor-fab-hint p {
+  margin: 0;
+  padding-right: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.mentor-fab-hint-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: -2px -2px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.mentor-fab-hint-close:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@keyframes fabHintIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mentor-fab {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -158,24 +242,24 @@
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
   cursor: pointer;
-  z-index: 400;
   box-shadow: 0 8px 32px rgba(59, 130, 246, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.25s, box-shadow 0.25s, opacity 0.25s;
+  transition: transform 0.25s, box-shadow 0.25s;
   animation: fabPulse 3s ease-in-out infinite;
+}
+
+.mentor-fab-label {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .mentor-fab:hover {
   transform: scale(1.06);
   box-shadow: 0 12px 40px rgba(59, 130, 246, 0.55);
-}
-
-.mentor-fab--hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.8);
 }
 
 @keyframes fabPulse {
@@ -357,10 +441,24 @@
   cursor: not-allowed;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .mentor-fab-hint {
+    animation: none;
+  }
+}
+
 @media (max-width: 480px) {
-  .mentor-fab {
+  .mentor-fab-wrap {
     right: 16px;
     bottom: 16px;
+  }
+
+  .mentor-fab-hint {
+    max-width: calc(100vw - 88px);
+  }
+
+  .mentor-fab-hint p {
+    font-size: 12px;
   }
 
   .mentor-panel {

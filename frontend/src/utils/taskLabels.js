@@ -1,12 +1,11 @@
-/** Yo'nalish nomi bilan vazifalar bo'limi sarlavhalari */
-export function taskDirectionIntro(name) {
-  return `${name} nimalar qiladi`;
+export function taskDirectionIntro(name, t) {
+  return t('tasks.directionIntro', { name });
 }
 
-export function taskDirectionTitle(name) {
-  return `${name} vazifalar`;
+export function taskDirectionTitle(name, t) {
+  return t('tasks.directionTitle', { name });
 }
 
-export function taskDirectionAction(name) {
-  return `${name} vazifalarini sinash`;
+export function taskDirectionAction(name, t) {
+  return t('tasks.directionAction', { name });
 }

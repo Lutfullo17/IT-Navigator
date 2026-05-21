@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import { useLanguage } from '../context/LanguageContext';
 import PhoneInput from '../components/PhoneInput';
 import { getApiErrorMessage, isPhoneComplete, toPhonePayload } from '../utils/phone';
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [phoneLocal, setPhoneLocal] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ function Login() {
     setError('');
 
     if (!isPhoneComplete(phoneLocal)) {
-      setError('Telefon raqamni to\'liq kiriting: +998 90 123 45 67');
+      setError(t('common.phoneIncomplete'));
       return;
     }
 
@@ -25,7 +27,7 @@ function Login() {
       await login(toPhonePayload(phoneLocal));
       navigate('/home');
     } catch (err) {
-      setError(getApiErrorMessage(err.response?.data, 'Kirishda xatolik. Telefon raqamni tekshiring.'));
+      setError(getApiErrorMessage(err.response?.data, t('auth.login.error')));
     } finally {
       setLoading(false);
     }
@@ -34,14 +36,14 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Kirish</h1>
+        <h1>{t('auth.login.title')}</h1>
         <p className="auth-subtitle">
-          Ro&apos;yxatdan o&apos;tgan telefon raqamingizni kiriting.
+          {t('auth.login.subtitle')}
         </p>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label>
-            Telefon raqam
+            {t('auth.login.phoneLabel')}
             <PhoneInput
               value={phoneLocal}
               onChange={setPhoneLocal}
@@ -52,12 +54,13 @@ function Login() {
           {error && <p className="auth-error">{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Kirish...' : 'Kirish'}
+            {loading ? t('auth.login.submitting') : t('auth.login.submit')}
           </button>
         </form>
 
         <p className="auth-link">
-          Akkauntingiz yo&apos;qmi? <Link to="/register">Ro&apos;yxatdan o&apos;tish</Link>
+          {t('auth.login.noAccount')}{' '}
+          <Link to="/register">{t('nav.register')}</Link>
         </p>
       </div>
     </div>

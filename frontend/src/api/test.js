@@ -1,4 +1,5 @@
 import client from './client';
+import { getPreferredLanguage } from './auth';
 import { localizeResults } from '../utils/directions';
 
 export async function startTest(language = 'uz', count = 15) {
@@ -13,7 +14,7 @@ export async function submitAnswers(sessionId, answers, language = 'uz') {
   });
   return {
     ...response.data,
-    results: localizeResults(response.data.results),
+    results: localizeResults(response.data.results, language),
   };
 }
 

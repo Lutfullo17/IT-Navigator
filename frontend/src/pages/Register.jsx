@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
+import { useLanguage } from '../context/LanguageContext';
 import PhoneInput from '../components/PhoneInput';
 import { getApiErrorMessage, isPhoneComplete, toPhonePayload } from '../utils/phone';
 
 function Register() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [fullName, setFullName] = useState('');
   const [phoneLocal, setPhoneLocal] = useState('');
   const [error, setError] = useState('');
@@ -16,7 +18,7 @@ function Register() {
     setError('');
 
     if (!isPhoneComplete(phoneLocal)) {
-      setError('Telefon raqamni to\'liq kiriting: +998 90 123 45 67');
+      setError(t('common.phoneIncomplete'));
       return;
     }
 
@@ -27,7 +29,7 @@ function Register() {
       await register({ full_name: fullName.trim(), phone });
       navigate('/home');
     } catch (err) {
-      setError(getApiErrorMessage(err.response?.data, 'Ro\'yxatdan o\'tishda xatolik.'));
+      setError(getApiErrorMessage(err.response?.data, t('auth.register.error')));
     } finally {
       setLoading(false);
     }
@@ -36,14 +38,14 @@ function Register() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>IT Navigator</h1>
+        <h1>{t('app.name')}</h1>
         <p className="auth-subtitle">
-          Ism va telefon raqamingizni kiriting — sizga mos IT yo&apos;nalishni topamiz.
+          {t('auth.register.subtitle')}
         </p>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label>
-            Ismingiz
+            {t('auth.register.nameLabel')}
             <input
               type="text"
               name="full_name"
@@ -55,7 +57,7 @@ function Register() {
           </label>
 
           <label>
-            Telefon raqam
+            {t('auth.register.phoneLabel')}
             <PhoneInput
               value={phoneLocal}
               onChange={setPhoneLocal}
@@ -66,12 +68,13 @@ function Register() {
           {error && <p className="auth-error">{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Yuborilmoqda...' : 'Boshlash'}
+            {loading ? t('common.submitting') : t('auth.register.submit')}
           </button>
         </form>
 
         <p className="auth-link">
-          Akkauntingiz bormi? <Link to="/login">Kirish</Link>
+          {t('auth.register.hasAccount')}{' '}
+          <Link to="/login">{t('nav.login')}</Link>
         </p>
       </div>
     </div>
