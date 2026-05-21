@@ -39,14 +39,21 @@ Loyiha ikki usulda deploy qilinadi:
 
 Bitta service uchun `VITE_API_URL` odatda kerak emas — `frontend/.env.production` da `/api` (shu domen).
 
-### Migratsiya va demo ma’lumot
+### PostgreSQL va jadvallar
 
-Railway **Shell** (backend service):
+- Railway **Add PostgreSQL** → `DATABASE_URL` avtomatik
+- Jadvallar: `python manage.py migrate` (qo‘lda ochilmaydi)
+- Demo kontent: `python manage.py seed_demo`
+- Batafsil: **[DATABASE.md](DATABASE.md)** (nima saqlanadi, CMD buyruqlar)
+
+Deployda `Dockerfile` avtomatik: `migrate` + `seed_demo`.
+
+Railway **Shell** (qo‘shimcha):
 
 ```bash
 python manage.py migrate
-python manage.py createsuperuser
 python manage.py seed_demo
+python manage.py createsuperuser
 ```
 
 ## 3. Frontend service

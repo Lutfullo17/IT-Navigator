@@ -110,13 +110,15 @@ SIMPLE_JWT = {
 
 database_url = os.environ.get('DATABASE_URL', '').strip()
 if database_url:
-    DATABASES = {
-        'default': dj_database_url.parse(
-            database_url,
-            conn_max_age=600,
-            conn_health_checks=True,
-        ),
-    }
+    db_config = dj_database_url.parse(
+        database_url,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+    if db_config.get('ENGINE', '').endswith('postgresql'):
+        db_config.setdefault('OPTIONS', {})
+        db_config['OPTIONS'].setdefault('connect_timeout', 10)
+    DATABASES = {'default': db_config}
 else:
     DATABASES = {
         'default': {
