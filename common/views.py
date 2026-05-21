@@ -7,6 +7,12 @@ from .serializers import ContactFeedbackSerializer
 from .telegram_notify import send_telegram_message
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def health_check(request):
+    return Response({'status': 'ok'})
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def contact_feedback(request):

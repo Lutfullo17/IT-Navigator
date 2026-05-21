@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 import config.admin  # noqa: F401 — admin panel branding
+from common.views import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('api/roadmap/', include('roadmap.urls')),
     path('api/motivation/', include('motivation.urls')),
     path('api/progress/', include('progress.urls')),
+    path('api/health/', health_check),
     path('api/feedback/', include('common.urls')),
 ]
