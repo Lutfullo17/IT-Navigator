@@ -26,13 +26,9 @@ COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 RUN test -f frontend/dist/index.html \
     && python manage.py collectstatic --noinput
 
+RUN chmod +x scripts/docker-entrypoint.sh
+
 ENV PORT=8000
 EXPOSE 8000
 
-# migrate/seed_demo railway.toml preDeployCommand da — gunicorn tez ishga tushsin (healthcheck)
-CMD exec gunicorn config.wsgi:application \
-    --bind 0.0.0.0:${PORT} \
-    --workers 2 \
-    --timeout 120 \
-    --access-logfile - \
-    --error-logfile -
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]

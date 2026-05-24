@@ -46,7 +46,7 @@ Bitta service uchun `VITE_API_URL` odatda kerak emas — `frontend/.env.producti
 - Demo kontent: `python manage.py seed_demo`
 - Batafsil: **[DATABASE.md](DATABASE.md)** (nima saqlanadi, CMD buyruqlar)
 
-Deployda `railway.toml` **preDeployCommand**: `migrate` + `seed_demo` (alohida qadam); konteyner darhol gunicorn bilan ishga tushadi — healthcheck `/health/` uchun.
+Deployda `scripts/docker-entrypoint.sh`: gunicorn darhol ishga tushadi, keyin `migrate` + `seed_demo` (yo'nalishlar, vazifalar, motivatsiya).
 
 Railway **Shell** (qo‘shimcha):
 
@@ -103,6 +103,7 @@ python manage.py createsuperuser
 | Admin stil yo‘q | `collectstatic` buildda ishlaydi (`railway.toml`) |
 | API ulanmaydi | Frontend `VITE_API_URL` va qayta build |
 | Telegram ishlamaydi | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` backend Variables |
-| Bo‘limlar bo‘sh (production) | `seed_demo` deployda ishlaydi; yoki Shell: `python manage.py seed_demo` |
+| **Yo'nalishlar bo'sh** («hali yuklanmagan») | Railway **Shell**: `python manage.py seed_demo` — yoki yangi deploy (entrypoint avtomatik to'ldiradi) |
+| Bo‘limlar bo‘sh (production) | `seed_demo` har deployda ishlaydi; qo‘lda: Shell `python manage.py seed_demo` |
 | Logout (tugma bosganda) | JWT refresh qo‘shildi; access token 12 soat |
 | Bir raqam 2 marta register | `phone_exists()` — `+998` va `998` bir xil; `normalize_phones` eski yozuvlar uchun |
