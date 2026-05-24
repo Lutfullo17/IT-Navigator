@@ -29,9 +29,8 @@ RUN test -f frontend/dist/index.html \
 ENV PORT=8000
 EXPOSE 8000
 
-CMD python manage.py migrate --noinput \
-    && python manage.py seed_demo \
-    && exec gunicorn config.wsgi:application \
+# migrate/seed_demo railway.toml preDeployCommand da — gunicorn tez ishga tushsin (healthcheck)
+CMD exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:${PORT} \
     --workers 2 \
     --timeout 120 \

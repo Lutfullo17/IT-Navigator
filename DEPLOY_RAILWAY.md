@@ -46,7 +46,7 @@ Bitta service uchun `VITE_API_URL` odatda kerak emas — `frontend/.env.producti
 - Demo kontent: `python manage.py seed_demo`
 - Batafsil: **[DATABASE.md](DATABASE.md)** (nima saqlanadi, CMD buyruqlar)
 
-Deployda `Dockerfile` avtomatik: `migrate` + `seed_demo`.
+Deployda `railway.toml` **preDeployCommand**: `migrate` + `seed_demo` (alohida qadam); konteyner darhol gunicorn bilan ishga tushadi — healthcheck `/health/` uchun.
 
 Railway **Shell** (qo‘shimcha):
 
@@ -97,6 +97,7 @@ python manage.py createsuperuser
 |----------|--------|
 | CORS xatosi | `CORS_ALLOWED_ORIGINS` da frontend URL to‘g‘ri va `https://` bilan |
 | 502 / DisallowedHost | `ALLOWED_HOSTS=.up.railway.app` yoki aniq backend domen |
+| **Healthcheck failure** (~5 min) | Gunicorn kech ishga tushgan: `migrate` endi preDeploy da; PostgreSQL ulanganligi, `SECURE_SSL_REDIRECT=False`, redeploy |
 | Container to‘xtaydi (Stopping Container) | `SECURE_SSL_REDIRECT=False`, health: `/health/`, redeploy |
 | `npm: command not found` / nix `user-environment.drv` xato | Loyihada **Dockerfile** ishlatiladi (Node+Python multi-stage) |
 | Admin stil yo‘q | `collectstatic` buildda ishlaydi (`railway.toml`) |
