@@ -26,21 +26,7 @@ def env_list(key, default=''):
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me')
 DEBUG = env_bool('DEBUG', True)
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    ".railway.app",
-]
-railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '').strip()
-if railway_domain and railway_domain not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(railway_domain)
-if 'healthcheck.railway.app' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('healthcheck.railway.app')
-if not DEBUG:
-    # Railway ichki health check localhost orqali keladi
-    for host in ('localhost', '127.0.0.1', '.up.railway.app', '.railway.app'):
-        if host not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(host)
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', 'localhost,127.0.0.1')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -159,12 +145,6 @@ STORAGES = {
 
 CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS') or CORS_ALLOWED_ORIGINS.copy()
-if railway_domain:
-    _origin = f'https://{railway_domain}'
-    if _origin not in CORS_ALLOWED_ORIGINS:
-        CORS_ALLOWED_ORIGINS.append(_origin)
-    if _origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(_origin)
 
 if DEBUG and env_bool('CORS_ALLOW_ALL_ORIGINS', True):
     CORS_ALLOW_ALL_ORIGINS = True
@@ -173,8 +153,7 @@ else:
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # Railway edge allaqachon HTTPS — ichki health check redirect loop bermasligi uchun default False
-    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', False)
+    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', True)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 

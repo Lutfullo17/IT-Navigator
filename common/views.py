@@ -10,7 +10,7 @@ from .telegram_notify import send_telegram_message
 
 
 def health_check(request):
-    """Railway health probe — DRF/CSRF dan tashqari, tez 200."""
+    """DRF/CSRF dan tashqari, tez 200."""
     return JsonResponse({'status': 'ok'})
 
 
@@ -19,7 +19,7 @@ def spa_index(request):
     index_path = settings.FRONTEND_DIST / 'index.html'
     if not index_path.is_file():
         return HttpResponse(
-            'Frontend build topilmadi. Railway build: cd frontend && npm run build',
+            'Frontend build topilmadi. cd frontend && npm run build',
             status=503,
             content_type='text/plain; charset=utf-8',
         )

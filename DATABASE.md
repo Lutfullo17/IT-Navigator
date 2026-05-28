@@ -63,7 +63,7 @@ GRANT ALL ON SCHEMA public TO itnav;
 DATABASE_URL=postgresql://itnav:SizningParol123@localhost:5432/it_navigator
 ```
 
-> `sqlite:///db.sqlite3` — faqat lokal test; production Railway **PostgreSQL** ishlatadi.
+> `sqlite:///db.sqlite3` — faqat lokal test; production **PostgreSQL** ishlatadi.
 
 ---
 
@@ -119,19 +119,18 @@ Chiqish: `\q`
 
 ---
 
-## 3. Railway (production)
+## 3. Production (PythonAnywhere)
 
-1. Project → **Add PostgreSQL**
-2. Backend service → **Variables** → `DATABASE_URL` avtomatik ulanadi
-3. Har deployda `Dockerfile` ishga tushiradi:
-   - `migrate` — jadvallar
-   - `seed_demo` — demo kontent
+Batafsil qo‘llanma: **[DEPLOY_PYTHONANYWHERE.md](DEPLOY_PYTHONANYWHERE.md)**
 
-Qo‘lda (Railway Shell):
+Qisqacha — Bash console:
 
 ```bash
+cd ~/it-navigator
+source venv/bin/activate
 python manage.py migrate
 python manage.py seed_demo
+python manage.py collectstatic --noinput
 python manage.py createsuperuser
 ```
 
