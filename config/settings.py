@@ -28,6 +28,11 @@ DEBUG = env_bool('DEBUG', True)
 
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', 'localhost,127.0.0.1')
 
+# Render avtomatik hostname (RENDER_EXTERNAL_HOSTNAME)
+_render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '').strip()
+if _render_host and _render_host not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_render_host)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -104,6 +109,9 @@ if database_url:
     if db_config.get('ENGINE', '').endswith('postgresql'):
         db_config.setdefault('OPTIONS', {})
         db_config['OPTIONS'].setdefault('connect_timeout', 10)
+        # Render PostgreSQL SSL talab qiladi
+        if 'sslmode' not in db_config['OPTIONS']:
+            db_config['OPTIONS']['sslmode'] = 'require'
     DATABASES = {'default': db_config}
 else:
     DATABASES = {
@@ -146,6 +154,10 @@ STORAGES = {
 CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS') or CORS_ALLOWED_ORIGINS.copy()
 
+_render_url = os.environ.get('RENDER_EXTERNAL_URL', '').strip()
+if _render_url and _render_url not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(_render_url)
+
 if DEBUG and env_bool('CORS_ALLOW_ALL_ORIGINS', True):
     CORS_ALLOW_ALL_ORIGINS = True
 else:
@@ -153,7 +165,8 @@ else:
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', True)
+    # Render/PA kabi proxy HTTPS ni o'zi beradi — default False (redirect loop bo'lmasin)
+    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', False)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
