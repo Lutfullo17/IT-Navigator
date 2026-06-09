@@ -69,12 +69,14 @@ PythonAnywhere da Node.js har doim bo‘lmaydi — **lokal kompyuteringizda** bu
 cd frontend
 npm ci
 npm run build
-git add dist
-git commit -m "frontend build"
-git push
 ```
 
-**Serverda yangilash:**
+`frontend/dist` papkasini serverga yuboring:
+
+- **Git:** `dist` ni repo ga qo'shing va `git push` (yoki)
+- **Files:** PythonAnywhere Files tab orqali `~/it-navigator/frontend/dist` ga yuklang
+
+**Serverda yangilash (git bo'lsa):**
 
 ```bash
 cd ~/it-navigator
@@ -145,37 +147,21 @@ Dashboard → **Web** → **Add a new web app**:
 3. **Virtualenv:** `/home/USERNAME/it-navigator/venv`
 4. **Code:** `/home/USERNAME/it-navigator`
 
-**WSGI configuration file** ni oching (`/var/www/USERNAME_pythonanywhere_com_wsgi.py`) va quyidagiga almashtiring:
+**WSGI configuration file** ni oching (`/var/www/USERNAME_pythonanywhere_com_wsgi.py`) va quyidagiga almashtiring (yoki `deploy/wsgi_pythonanywhere.example.py` dan nusxa oling):
 
 ```python
-import os
 import sys
 
 path = '/home/USERNAME/it-navigator'
 if path not in sys.path:
     sys.path.insert(0, path)
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-
-from django.core.wsgi import get_wsgi_application
-from whitenoise import WhiteNoise
-from pathlib import Path
-
-application = get_wsgi_application()
-
-FRONTEND_DIST = Path(path) / 'frontend' / 'dist'
-if (FRONTEND_DIST / 'index.html').is_file():
-    application = WhiteNoise(
-        application,
-        root=str(FRONTEND_DIST),
-        index_file=True,
-        autorefresh=False,
-    )
+from config.wsgi import application
 ```
 
 `USERNAME` ni o‘zgartiring. **Save** → **Reload** web app.
 
-> Loyihadagi `config/wsgi.py` ham xuddi shu mantiq — PA WSGI faylida nusxa qilish aniqroq.
+> Barcha WSGI mantiq `config/wsgi.py` da — PA faylida faqat `sys.path` va import yetarli.
 
 ---
 
@@ -243,6 +229,7 @@ Web tab → **Reload**.
 | Fayl | Vazifa |
 |------|--------|
 | `config/wsgi.py` | Django + WhiteNoise (SPA) |
+| `deploy/wsgi_pythonanywhere.example.py` | PA WSGI fayli namunasi |
 | `config/settings.py` | `.env`, PostgreSQL, static |
 | `frontend/.env.production` | `VITE_API_URL=/api` |
 | `requirements.txt` | Django, whitenoise, psycopg2, … |
