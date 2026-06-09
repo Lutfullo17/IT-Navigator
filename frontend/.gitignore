@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist — PythonAnywhere free da Node yo'q; build lokalda, dist git orqali serverga ketadi
 dist-ssr
 *.local
 .env

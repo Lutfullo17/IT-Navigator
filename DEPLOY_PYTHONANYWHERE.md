@@ -59,11 +59,19 @@ PythonAnywhere Web tab da **Virtualenv** yo‘lini ko‘rsating:
 
 ---
 
-## 4. Frontend build
+## 4. Frontend build (muhim — PA free da Node.js yo‘q)
 
-PythonAnywhere da Node.js har doim bo‘lmaydi — **lokal kompyuteringizda** build qilib, `frontend/dist` ni serverga yuboring.
+PythonAnywhere **free** rejimida Node.js **yo‘q**. Serverda `npm` ishlamaydi — bu normal.
 
-**Lokal (Windows):**
+**Yechim:** frontendni **o‘z kompyuteringizda** build qilib, tayyor `frontend/dist` papkasini serverga yuborasiz. Django shu fayllarni WhiteNoise orqali beradi.
+
+### Birinchi marta (lokal Windows)
+
+```powershell
+.\scripts\build-for-pa.ps1
+```
+
+Yoki qo‘lda:
 
 ```powershell
 cd frontend
@@ -71,25 +79,42 @@ npm ci
 npm run build
 ```
 
-`frontend/dist` papkasini serverga yuboring:
+Builddan keyin `frontend/dist/index.html` paydo bo‘ladi.
 
-- **Git:** `dist` ni repo ga qo'shing va `git push` (yoki)
-- **Files:** PythonAnywhere Files tab orqali `~/it-navigator/frontend/dist` ga yuklang
+### Serverga yuborish (tavsiya — git)
 
-**Serverda yangilash (git bo'lsa):**
+`frontend/dist` repoda saqlanadi (PA da Node kerak bo‘lmasin deb):
+
+```powershell
+git add frontend/dist
+git commit -m "frontend build for PythonAnywhere"
+git push
+```
+
+**Serverda:**
 
 ```bash
 cd ~/it-navigator
 git pull
 ```
 
-`frontend/.env.production` da allaqachon:
+Web tab → **Reload**.
+
+### Alternativa — Files tab
+
+Git ishlatmasangiz: PythonAnywhere **Files** → `~/it-navigator/frontend/dist` papkasini yarating va lokal `frontend/dist` ichidagi barcha fayllarni yuklang (`index.html`, `assets/` va h.k.).
+
+### Frontend o‘zgarganda
+
+Har safar lokalda `.\scripts\build-for-pa.ps1` → `git push` → serverda `git pull` → **Reload**.
+
+`frontend/.env.production`:
 
 ```env
 VITE_API_URL=/api
 ```
 
-Bu bir xil domen uchun to‘g‘ri — qayta build shart emas, agar API URL o‘zgarmasa.
+Bir xil domen uchun to‘g‘ri — API URL o‘zgarmasa qayta build shart emas.
 
 ---
 
